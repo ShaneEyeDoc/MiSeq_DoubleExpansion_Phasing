@@ -1,13 +1,13 @@
 #!/bin/bash
  
 # Input folder for fastq files
-input_folder="/Users/dgm/Desktop/testShanesScript/R2"
+input_folder="/Users/shane/Library/CloudStorage/OneDrive-UniversityCollegeLondon/Medicine/Ophthalmology_ST/PhD/MiSeq/DoubleExpanded/RawData"
  
 # Reference list CSV file
-reference_list="/Users/dgm/Desktop/testShanesScript/allele_CTC_list.csv"
+reference_list="/Users/shane/Library/CloudStorage/OneDrive-UniversityCollegeLondon/Medicine/Ophthalmology_ST/PhD/MiSeq/DoubleExpanded/allele_CTC_list.csv"
  
 # Output directory for Allele_1 and Allele_2 read ids
-output_directory="/Users/dgm/Desktop/testShanesScript/TestOutput"
+output_directory="/Users/shane/Library/CloudStorage/OneDrive-UniversityCollegeLondon/Medicine/Ophthalmology_ST/PhD/MiSeq/DoubleExpanded/TestOutput"
  
 # Create the output directory if it doesn't exist
 mkdir -p "$output_directory"
@@ -58,3 +58,5 @@ for input_fastq in "$input_folder"/*_R2_001.fastq; do
     awk -v seq="$sequence_to_match_allele_2" 'NR % 4 == 1 {gsub(/^@| 2:N.*/, ""); print}' "$input_fastq" > "$output_fastq_allele_2"
  
     echo "Allele_2 matching sequences saved to: $output_fastq_allele_2"
+
+    done
