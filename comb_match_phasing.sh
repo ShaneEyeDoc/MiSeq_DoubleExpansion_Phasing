@@ -1,3 +1,4 @@
+#This script is used to loop through all fastq files in a folder and extract read ids for Allele_1 and Allele_2. The read ids are saved to separate text files with r2_allele_1_ctc and r2_allele_2_ctc suffixes. The script also displays the numbers after CTC in r2_allele_1_ctc and r2_allele_2_ctc columns for each fastq file. 
 #!/bin/bash
  
 # Input folder for fastq files
