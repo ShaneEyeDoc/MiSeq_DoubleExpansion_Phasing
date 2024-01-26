@@ -58,10 +58,10 @@ echo "Sequence to match for Allele_1: $sequence_to_match_allele_1"
 echo "Sequence to match for Allele_2: $sequence_to_match_allele_2"
 
 # Output fastq file with r2_allele_1_ctc suffix
-output_fastq_allele_1="$output_directory/$(basename "${input_fastq%.fastq}")_CTC_${repeat_count_1}.txt"
+output_fastq_allele_1="$output_directory/$(basename "${input_fastq%.fastq}")_CTC${repeat_count_1}.txt"
 
 # Output fastq file with r2_allele_2_ctc suffix
-output_fastq_allele_2="$output_directory/$(basename "${input_fastq%.fastq}")_CTC_${repeat_count_2}.txt"
+output_fastq_allele_2="$output_directory/$(basename "${input_fastq%.fastq}")_CTC${repeat_count_2}.txt"
 
 # Extract matching sequences, write corresponding read id (i.e., first line for each group of 4 lines: NR % 4 == 1) without @ and "" 2:N.*"" for Allele_1
 awk -v seq="$sequence_to_match_allele_1" 'BEGIN{OFS="\t"} {if (NR % 4 == 1) {header=$1; gsub(/^@| 2:N.*/, "", header); getline seq_line; if (seq_line ~ seq) print header}}' "$input_fastq" > "$output_fastq_allele_1"
