@@ -28,8 +28,7 @@ for input_fastq in "$input_folder"/*_R2_001.fastq; do
     # Match mid (i.e. MiSeqID) part with sample_key in the reference list
     sample_info=$(grep "$mid_part" "$reference_list")
  
-    # Display the polymorphic CTC motif in r2_allele_1_ctc and r2_allele_2_ctc columns
-
+    # Display the polymorphic CTC motif in r2_allele_1_ctc and r2_allele_2_ctc columns. The awk -F',' '{print $2}' command is used to process the printed value. The -F',' option sets the field separator to a ",". This means that the string is split into fields wherever a "," is found. The print $2 (or $3) command prints the second or third field, which is the CTC motifs.
     r2_ctc_1=$(echo "$sample_info" | awk -F',' '{print $2}')
     r2_ctc_2=$(echo "$sample_info" | awk -F',' '{print $3}')
  
@@ -39,9 +38,6 @@ for input_fastq in "$input_folder"/*_R2_001.fastq; do
     echo "r2_ctc_1: $r2_ctc_1"
     echo "r2_ctc_2: $r2_ctc_2"
 
-    # Sanitize the sequence for filenames so that the square brackets are removed i.e. CTC6CTTCTC6. The tr -d '[]' command is used to remove the square brackets.
-    sanitized_sequence_allele_1=$(echo "$r2_ctc_1" | tr -d '[]')
-    sanitized_sequence_allele_2=$(echo "$r2_ctc_2" | tr -d '[]')
 
     #Count the number of polymorphic CTC segment of the motif i.e. 6 or 4 etc. The awk -F'[\\[\\]]' '{print $3}' command is used to process the printed value. The -F'[\\[\\]]' option sets the field separator to either a "[" or a "]". This means that the string is split into fields wherever a "[" or a "]" is found. The print $3 command prints the third field, which is the number of repeats.
     repeat_count_1=$(echo "$r2_ctc_1" | awk -F'[\\[\\]]' '{print $3}')
@@ -60,12 +56,12 @@ for input_fastq in "$input_folder"/*_R2_001.fastq; do
     output_fastq_allele_2="$output_directory/$(basename "${input_fastq%.fastq}")_CTC${repeat_count_2}.txt"
  
     #Extract matching sequences, write corresponding read id (i.e., first line for each group of 4 lines: NR % 4 == 1) without @ and "" 2:N.*"" for Allele_1. the awk -v seq="$sequence_to_match_allele_1" command is used to pass the sequence_to_match_allele_1 variable to awk. The BEGIN{OFS="\t"} command is used to set the output field separator to a tab character. The if (NR % 4 == 1) command is used to check if the current line number is a multiple of 4. The getline seq_line command is used to read the next line into the seq_line variable. The if (seq_line ~ seq) command is used to check if the seq_line variable contains the sequence_to_match_allele_1 variable. The print header command is used to print the header variable. The gsub(/^@| 2:N.*/, "", header) command is used to remove the "@" and " 2:N.*" from the header variable. The print header command is used to print the header variable.
-    awk -v seq="$sequence_to_match_allele_1" 'NR % 4 == 1 {header=$1; gsub(/^@| 2:N.*/, "", header); getline seq_line; if (seq_line ~ seq) print header, seq_line}' "$input_fastq" > "$output_fastq_allele_1"
+    awk -v seq="$sequence_to_match_allele_1" 'NR % 4 == 1 {header=$1; gsub(/^@| 2:N.*/, "", header); getline seq_line; if (seq_line ~ seq) print header}' "$input_fastq" > "$output_fastq_allele_1"
  
     echo "Allele_1 matching sequences saved to: $output_fastq_allele_1"
  
     # Extract matching sequences, write correspondinng read id (i.e. first linefor each group of 4 lines: NR % 4 == 1) without @ and "" 2:N.*"" for Allele_2
-    awk -v seq="$sequence_to_match_allele_2" 'NR % 4 == 1 {header=$1; gsub(/^@| 2:N.*/, "", header); getline seq_line; if (seq_line ~ seq) print header, seq_line}' "$input_fastq" > "$output_fastq_allele_2"
+    awk -v seq="$sequence_to_match_allele_2" 'NR % 4 == 1 {header=$1; gsub(/^@| 2:N.*/, "", header); getline seq_line; if (seq_line ~ seq) print header}' "$input_fastq" > "$output_fastq_allele_2"
  
     echo "Allele_2 matching sequences saved to: $output_fastq_allele_2"
 
